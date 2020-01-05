@@ -3,6 +3,7 @@ import 'package:clone_kumparan/widgets/news_item.dart';
 import 'package:clone_kumparan/widgets/news_item_placeholder.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:simple_animations/simple_animations.dart';
 
@@ -15,13 +16,39 @@ class ForYou extends StatefulWidget {
 
 class _ForYouState extends State<ForYou> {
   bool isLoading = true;
+  ScrollController _scrollController;
+  bool _isVisible = true;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _scrollController = new ScrollController();
+    _scrollController.addListener(() {
+      // print("listener");
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        setState(() {
+          _isVisible = false;
+        });
+      }
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        setState(() {
+          _isVisible = true;
+        });
+      }
+    });
     Future.delayed(Duration(milliseconds: 3500), () {
       setLoading(false);
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _scrollController.dispose();
   }
 
   setLoading(value) {
@@ -82,11 +109,17 @@ class _ForYouState extends State<ForYou> {
       appBar: _buildAppBar(),
       body: Column(
         children: <Widget>[
-          _buildHeaderOption(),
+          AnimatedContainer(
+            child: _buildHeaderOption(),
+            curve: Curves.decelerate,
+            height: ScreenUtil.getInstance().setHeight(_isVisible ? 100 : 0),
+            duration: Duration(milliseconds: 500),
+          ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: _refreshList,
               child: SingleChildScrollView(
+                controller: _scrollController,
                 physics: BouncingScrollPhysics(),
                 child: Column(
                   children: <Widget>[

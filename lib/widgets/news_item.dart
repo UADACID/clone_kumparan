@@ -12,95 +12,104 @@ class NewsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Divider(
-              color: Colors.grey,
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Routes.sailor.navigate('news_detail');
-            },
-            child: Padding(
-              padding: EdgeInsets.all(5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          newsItemModel.title,
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          'kumparanNews',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
+    return Hero(
+      tag: newsItemModel.title,
+          child: Material(
+            color: Colors.white,
+            child: Container(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Divider(
+                  color: Colors.grey,
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Routes.sailor.navigate<bool>('news_detail', params: {
+                    'title': newsItemModel.title,
+                    'imageUrl': newsItemModel.imageUrl
+                  });
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            _buildIconWithCounter(FeatherIcons.heart, '10'),
-                            SizedBox(
-                              width: 10,
+                            Text(
+                              newsItemModel.title,
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
-                            _buildIconWithCounter(
-                                FeatherIcons.messageCircle, '28'),
                             SizedBox(
-                              width: 10,
-                            ),
-                            _buildIconWithCounter(FeatherIcons.share2, ''),
-                            SizedBox(
-                              width: 10,
+                              height: 10,
                             ),
                             Text(
-                              '3 November 2019',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 11),
+                              'kumparanNews',
+                              style: TextStyle(color: Colors.grey),
                             ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                _buildIconWithCounter(FeatherIcons.heart, '10'),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                _buildIconWithCounter(
+                                    FeatherIcons.messageCircle, '28'),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                _buildIconWithCounter(FeatherIcons.share2, ''),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  '3 November 2019',
+                                  style:
+                                      TextStyle(color: Colors.grey, fontSize: 11),
+                                ),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: CachedNetworkImage(
-                      width: size.width / 3.5,
-                        height: size.width / 3.5,
-                        fit: BoxFit.cover,
-                      imageUrl: newsItemModel.imageUrl,
-                      placeholder: (context, url) => Container(
-                        width: size.width / 3.5,
-                        height: size.width / 3.5,
-                        color: Colors.grey[200],
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        width: size.width / 3.5,
-                        height: size.width / 3.5,
-                        color: Colors.grey[200],
-                        child: Center(
-                          child: Text(error.toString()),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: CachedNetworkImage(
+                          width: size.width / 3.5,
+                            height: size.width / 3.5,
+                            fit: BoxFit.cover,
+                          imageUrl: newsItemModel.imageUrl,
+                          placeholder: (context, url) => Container(
+                            width: size.width / 3.5,
+                            height: size.width / 3.5,
+                            color: Colors.grey[200],
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            width: size.width / 3.5,
+                            height: size.width / 3.5,
+                            color: Colors.grey[200],
+                            child: Center(
+                              child: Text(error.toString()),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

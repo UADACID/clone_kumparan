@@ -60,5 +60,27 @@ class ListNewsItem {
       loveCounter: 14,
       commentCounter: 8
     ),
+    NewsItemModel(
+      title: 'Korban Meninggal Imbas Banjir Jabodetabek-Lebak Jadi 60 Orang ',
+      category: 1,
+      imageUrl: 'https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1578041385/odyluh5adkercedjfofe.jpg',
+      loveCounter: 14,
+      commentCounter: 8
+    ),
+    NewsItemModel(
+      title: ' Akhir Drama Suami Hilang di Malang Ternyata Hanya Prank ',
+      category: 1,
+      imageUrl: 'https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1578184575/ibalygionghuspiovdly.jpg',
+      loveCounter: 14,
+      commentCounter: 8
+    ),
+    NewsItemModel(
+      title: 'TNI: Jangan Ada Oknum Perkeruh Hubungan RI-China soal Natuna ',
+      category: 1,
+      imageUrl: 'https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1578191746/vdxn0r5ccrlc6ftje4jy.jpg',
+      loveCounter: 14,
+      commentCounter: 8
+    ),
+    
   ];
 }

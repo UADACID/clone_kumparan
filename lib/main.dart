@@ -2,12 +2,16 @@ import 'package:clone_kumparan/screens/news_detail.dart';
 import 'package:clone_kumparan/screens/search.dart';
 import 'package:clone_kumparan/screens/splash.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sailor/sailor.dart';
 
 import 'screens/dashboard.dart';
 
 void main() async {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.white
+));
   Routes.createRoutes();
   runApp(MyApp());
 }
@@ -67,7 +71,17 @@ class Routes {
             return NewsDetail();
           },
           name: 'news_detail',
-          defaultTransitionDuration: Duration(milliseconds: 250),
+          params: [
+            SailorParam<String>(
+              name: 'title',
+              defaultValue: 'No Title',
+            ),
+            SailorParam<String>(
+              name: 'imageUrl',
+              defaultValue: '',
+            ),
+          ],
+          defaultTransitionDuration: Duration(milliseconds: 500),
           defaultTransitions: [SailorTransition.fade_in]),
     ]);
   }
