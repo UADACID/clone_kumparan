@@ -1,32 +1,86 @@
+import 'package:clone_kumparan/models/news_item_model.dart';
+import 'package:clone_kumparan/widgets/news_item.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:simple_animations/simple_animations.dart';
 
-class Search extends StatelessWidget {
+class Search extends StatefulWidget {
+  @override
+  _SearchState createState() => _SearchState();
+}
+
+class _SearchState extends State<Search> {
+  FocusNode focusNode = FocusNode();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      FocusScope.of(context).requestFocus(focusNode);
+    });
+    
+  }
+
+  generateList() {
+    List<Widget> list = [];
+    List<NewsItemModel> data = ListNewsItem.listForHome;
+    for (var i = 0; i < data.length; i++) {
+      list.add(NewsItem(newsItemModel: data[i]));
+    }
+
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     return Scaffold(
-      appBar: _buildAppBar(context),
-      body: Container(
-        // margin: EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 30,
-                ),
-                _buildPopulerContainer(),
-                SizedBox(
-                  height: 40,
-                ),
-                _buildRecomendationContainer(context),
-              ],
-            )),
+      appBar: _buildAppBar(context, focusNode),
+      // body: _buildBody(context),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            color: Colors.white,
+            height: double.infinity,
+            width: double.infinity,
+          ),
+          ControlledAnimation(
+              duration: Duration(milliseconds: 600),
+              tween: Tween(begin: Offset(0, ScreenUtil.screenHeight / 1.5), end: Offset.zero),
+              curve: Curves.decelerate,
+              child: _buildBody(context),
+              builderWithChild: (context, child, value) {
+                return Transform.translate(
+                  offset: value,
+                  child: child);
+              }),
+        ],
       ),
+    );
+  }
+
+  Container _buildBody(BuildContext context) {
+    return Container(
+      // margin: EdgeInsets.symmetric(horizontal: 20),
+      color: Colors.white,
+      child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 30,
+              ),
+              _buildPopulerContainer(),
+              SizedBox(
+                height: 40,
+              ),
+              _buildRecomendationContainer(context),
+            ],
+          )),
     );
   }
 
@@ -81,124 +135,11 @@ class Search extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: Column(
-              children: <Widget>[
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-                _buildRecomendationItem(size),
-              ],
+              children: generateList(),
             ),
           )
         ],
       ),
-    );
-  }
-
-  Container _buildRecomendationItem(Size size) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Divider(
-              color: Colors.grey,
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Padding(
-              padding: EdgeInsets.all(5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          'CFD di Bundaran Hi Kini Bebas dari PKL',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          'kumparanNews',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            _buildIconWithCounter(FeatherIcons.heart, '10'),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            _buildIconWithCounter(
-                                FeatherIcons.messageCircle, '28'),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            _buildIconWithCounter(FeatherIcons.share2, ''),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              '3 November 2019',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 11),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  ClipRRect(
-                    borderRadius: new BorderRadius.circular(8.0),
-                    child: Image.network(
-                      'https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,q_auto:best,w_640/v1570429343/fcahcysqhzm1azs5fxqh.jpg',
-                      width: size.width / 3.5,
-                      height: size.width / 3.5,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Stack _buildIconWithCounter(IconData iconData, String counter) {
-    return Stack(
-      children: <Widget>[
-        Icon(iconData, color: Colors.grey),
-        Transform.translate(
-          child: Container(
-            padding: EdgeInsets.all(counter == '' ? 0 : 1),
-
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-            ),
-            child: Text(counter,
-                style: TextStyle(fontSize: 11, color: Colors.grey)),
-          ),
-          offset: Offset(17, -6),
-        )
-      ],
     );
   }
 
@@ -234,14 +175,15 @@ class Search extends StatelessWidget {
     );
   }
 
-  AppBar _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar(BuildContext context, FocusNode focusNode) {
     return AppBar(
       automaticallyImplyLeading: false,
+      elevation: 0,
       title: Row(
         children: <Widget>[
           InkWell(
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(context, 'Valuewkwk');
             },
             child: Icon(Icons.arrow_back),
           ),
@@ -252,12 +194,13 @@ class Search extends StatelessWidget {
             child: Container(
               height: ScreenUtil.getInstance().setWidth(65),
               child: TextField(
-                autofocus: true,
+                // autofocus: true,
+                focusNode: focusNode,
                 decoration: InputDecoration(
-                    // focusedBorder: OutlineInputBorder(
-                    //     borderSide:
-                    //         BorderSide(color: Colors.grey[300], width: 1.0),
-                    //     borderRadius: BorderRadius.all(Radius.circular(20))),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.grey[300], width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
                     enabledBorder: OutlineInputBorder(
                         borderSide:
                             BorderSide(color: Colors.grey[300], width: 1.0),

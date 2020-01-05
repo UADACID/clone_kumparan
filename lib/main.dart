@@ -1,3 +1,4 @@
+import 'package:clone_kumparan/screens/news_detail.dart';
 import 'package:clone_kumparan/screens/search.dart';
 import 'package:clone_kumparan/screens/splash.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,10 @@ import 'package:sailor/sailor.dart';
 
 import 'screens/dashboard.dart';
 
-void main()async  {
+void main() async {
   Routes.createRoutes();
   runApp(MyApp());
-  }
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -17,19 +18,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      navigatorKey: Routes.sailor.navigatorKey,  // important
-      onGenerateRoute: Routes.sailor.generator(), 
+      navigatorKey: Routes.sailor.navigatorKey, // important
+      onGenerateRoute: Routes.sailor.generator(),
       theme: ThemeData(
           primarySwatch: Colors.blue,
           textTheme: GoogleFonts.notoSansTextTheme(),
+          backgroundColor: Colors.white,
           appBarTheme: AppBarTheme(
-              brightness: Brightness.light,
-              iconTheme: IconThemeData(
-                color: Colors.black
-              ),
-              color: Colors.white,
-              textTheme: TextTheme(title: TextStyle(color: Colors.black)))),
-      home: Dashboard(),
+            brightness: Brightness.light,
+            iconTheme: IconThemeData(color: Colors.black),
+            color: Colors.white,
+            textTheme: TextTheme(title: TextStyle(color: Colors.black)),
+          )),
+      home: Splash(),
     );
   }
 }
@@ -46,11 +47,12 @@ class Routes {
           },
           name: 'splash'),
       SailorRoute(
-          builder:
-              (BuildContext context, BaseArguments args, ParamMap paramMap) {
-            return Dashboard();
-          },
-          name: 'dashboard'),
+        builder: (BuildContext context, BaseArguments args, ParamMap paramMap) {
+          return Dashboard();
+        },
+        name: 'dashboard',
+        defaultTransitions: [SailorTransition.fade_in],
+      ),
       SailorRoute(
           builder:
               (BuildContext context, BaseArguments args, ParamMap paramMap) {
@@ -58,9 +60,15 @@ class Routes {
           },
           name: 'search',
           defaultTransitionDuration: Duration(milliseconds: 250),
-          defaultTransitions: [
-            SailorTransition.fade_in
-          ]),
+          defaultTransitions: [SailorTransition.fade_in]),
+      SailorRoute(
+          builder:
+              (BuildContext context, BaseArguments args, ParamMap paramMap) {
+            return NewsDetail();
+          },
+          name: 'news_detail',
+          defaultTransitionDuration: Duration(milliseconds: 250),
+          defaultTransitions: [SailorTransition.fade_in]),
     ]);
   }
 }
