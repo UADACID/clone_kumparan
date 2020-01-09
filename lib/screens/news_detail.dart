@@ -38,7 +38,9 @@ class NewsDetail extends StatelessWidget {
         [
           ControlledAnimation(
               duration: Duration(milliseconds: 900),
-              tween: Tween(begin: Offset(0, ScreenUtil.screenHeight / 3), end: Offset.zero),
+              tween: Tween(
+                  begin: Offset(0, ScreenUtil.screenHeight / 3),
+                  end: Offset.zero),
               curve: Curves.easeIn,
               builder: (context, value) {
                 return Transform.translate(offset: value, child: contentDesc());
@@ -105,23 +107,46 @@ class NewsDetail extends StatelessWidget {
       double appBarHeight, double statusBarHeight, BuildContext context) {
     final title = Sailor.param<String>(context, 'title');
     final imageUrl = Sailor.param<String>(context, 'imageUrl');
+    final key = Sailor.param<String>(context, 'key');
     return SliverAppBar(
       // pinned: true,
-      title: _buildTitleAppBar(appBarHeight, statusBarHeight),
+
+      title: ControlledAnimation(
+          duration: Duration(milliseconds: 750),
+          curve: Curves.decelerate,
+          tween: Tween(begin: Offset(0, -100), end: Offset.zero),
+          child: _buildTitleAppBar(appBarHeight, statusBarHeight),
+          builderWithChild: (context, child, value) {
+            return Transform.translate(
+              offset: value,
+              child: child,
+            );
+          }),
       titleSpacing: 0,
-      leading: InkWell(
-        onTap: () {
-          Routes.sailor.pop();
-        },
-        child: Container(color: Colors.white, child: Icon(Icons.arrow_back)),
-      ),
-      expandedHeight: ScreenUtil.screenHeight / 4,
+      leading: ControlledAnimation(
+          duration: Duration(milliseconds: 750),
+          curve: Curves.decelerate,
+          tween: Tween(begin: Offset(0, -100), end: Offset.zero),
+          child: InkWell(
+            onTap: () {
+              Routes.sailor.pop();
+            },
+            child:
+                Container(color: Colors.white, child: Icon(Icons.arrow_back)),
+          ),
+          builderWithChild: (context, child, value) {
+            return Transform.translate(
+              offset: value,
+              child: child,
+            );
+          }),
+      expandedHeight: ScreenUtil.getInstance().setWidth(1000),
       flexibleSpace: FlexibleSpaceBar(
         background: Hero(
-          tag: title,
-                  child: Material(
-                    color: Colors.white,
-                    child: Container(
+          tag: title + key,
+          child: Material(
+            color: Colors.white,
+            child: Container(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +188,7 @@ class NewsDetail extends StatelessWidget {
                   ),
                   Expanded(
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(8.0),
                       child: CachedNetworkImage(
                         alignment: Alignment.center,
                         width: double.infinity,

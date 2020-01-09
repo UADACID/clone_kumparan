@@ -1,10 +1,13 @@
 import 'package:clone_kumparan/models/news_item_model.dart';
+import 'package:clone_kumparan/store/for_you_store.dart';
 import 'package:clone_kumparan/widgets/news_item.dart';
 import 'package:clone_kumparan/widgets/news_item_placeholder.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 import '../main.dart';
@@ -17,7 +20,6 @@ class ForYou extends StatefulWidget {
 class _ForYouState extends State<ForYou> {
   bool isLoading = true;
   ScrollController _scrollController;
-  bool _isVisible = true;
 
   @override
   void initState() {
@@ -25,22 +27,24 @@ class _ForYouState extends State<ForYou> {
     super.initState();
     _scrollController = new ScrollController();
     _scrollController.addListener(() {
-      // print("listener");
+      ForYouStore forYouStore =
+          Provider.of<ForYouStore>(context, listen: false);
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
-        setState(() {
-          _isVisible = false;
-        });
+        if (forYouStore.isHideOption == false) {
+          forYouStore.setHideOption(true);
+        }
       }
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
-        setState(() {
-          _isVisible = true;
-        });
+        if (forYouStore.isHideOption == true) {
+          forYouStore.setHideOption(false);
+        }
       }
     });
     Future.delayed(Duration(milliseconds: 3500), () {
-      setLoading(false);
+      // setLoading(false);
+      Provider.of<ForYouStore>(context, listen: false).setLoading(false);
     });
   }
 
@@ -90,13 +94,9 @@ class _ForYouState extends State<ForYou> {
   }
 
   Future<void> _refreshList() async {
-    this.setState(() {
-      isLoading = true;
-    });
+    Provider.of<ForYouStore>(context, listen: false).setLoading(true);
     await Future.delayed(Duration(seconds: 3), () {
-      this.setState(() {
-        isLoading = false;
-      });
+      Provider.of<ForYouStore>(context, listen: false).setLoading(false);
     });
   }
 
@@ -105,16 +105,23 @@ class _ForYouState extends State<ForYou> {
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
+    // print('rerender');
     return Scaffold(
       appBar: _buildAppBar(),
+      backgroundColor: Colors.white,
       body: Column(
         children: <Widget>[
-          AnimatedContainer(
-            child: _buildHeaderOption(),
-            curve: Curves.decelerate,
-            height: ScreenUtil.getInstance().setHeight(_isVisible ? 100 : 0),
-            duration: Duration(milliseconds: 500),
-          ),
+          Observer(builder: (_) {
+            ForYouStore forYouStore = Provider.of<ForYouStore>(context);
+            print('render observable');
+            return AnimatedContainer(
+              child: _buildHeaderOption(),
+              curve: Curves.decelerate,
+              height: ScreenUtil.getInstance()
+                  .setHeight(forYouStore.isHideOption ? 2 : 100),
+              duration: Duration(milliseconds: 300),
+            );
+          }),
           Expanded(
             child: RefreshIndicator(
               onRefresh: _refreshList,
@@ -138,11 +145,17 @@ class _ForYouState extends State<ForYou> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Column(
-                        children: isLoading
-                            ? generateListPlaceholder()
-                            : generateList(),
-                      ),
+                      child: Observer(builder: (_) {
+                        ForYouStore forYouStore =
+                            Provider.of<ForYouStore>(context);
+                        // print('re-render list');
+                        return Column(
+                          key: Key('loremIpsum'),
+                          children: forYouStore.isLoading
+                              ? generateListPlaceholder()
+                              : generateList(),
+                        );
+                      }),
                     ),
                   ],
                 ),
@@ -220,8 +233,8 @@ class _ForYouState extends State<ForYou> {
               child: InkWell(
                 borderRadius: new BorderRadius.circular(20.0),
                 onTap: () async {
-                  var a = await Routes.sailor.navigate('search');
-                  print(a);
+                  Routes.sailor.navigate('search');
+                  // print(a);
                 },
                 child: TextField(
                   enabled: false,

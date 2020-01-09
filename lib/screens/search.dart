@@ -20,14 +20,15 @@ class _SearchState extends State<Search> {
     Future.delayed(Duration.zero, () {
       FocusScope.of(context).requestFocus(focusNode);
     });
-    
   }
 
   generateList() {
     List<Widget> list = [];
     List<NewsItemModel> data = ListNewsItem.listForHome;
     for (var i = 0; i < data.length; i++) {
-      list.add(NewsItem(newsItemModel: data[i]));
+      if (i % 2 == 0) {
+        list.add(NewsItem(newsItemModel: data[i], key: Key('search$i'),));
+      }
     }
 
     return list;
@@ -50,13 +51,13 @@ class _SearchState extends State<Search> {
           ),
           ControlledAnimation(
               duration: Duration(milliseconds: 600),
-              tween: Tween(begin: Offset(0, ScreenUtil.screenHeight / 1.5), end: Offset.zero),
+              tween: Tween(
+                  begin: Offset(0, ScreenUtil.screenHeight / 1.5),
+                  end: Offset.zero),
               curve: Curves.decelerate,
               child: _buildBody(context),
               builderWithChild: (context, child, value) {
-                return Transform.translate(
-                  offset: value,
-                  child: child);
+                return Transform.translate(offset: value, child: child);
               }),
         ],
       ),
@@ -124,6 +125,7 @@ class _SearchState extends State<Search> {
     Size size = MediaQuery.of(context).size;
     return Container(
       child: Column(
+        key: Key('buildRecomendationContainer'),
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),

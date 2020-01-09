@@ -12,8 +12,9 @@ class NewsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    // print(key.toString());
     return Hero(
-      tag: newsItemModel.title,
+      tag: newsItemModel.title + key.toString(),
           child: Material(
             color: Colors.white,
             child: Container(
@@ -29,7 +30,8 @@ class NewsItem extends StatelessWidget {
                 onTap: () {
                   Routes.sailor.navigate<bool>('news_detail', params: {
                     'title': newsItemModel.title,
-                    'imageUrl': newsItemModel.imageUrl
+                    'imageUrl': newsItemModel.imageUrl,
+                    'key': key.toString()
                   });
                 },
                 child: Padding(
